@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<head>
+  <title>Polish Books Themes - an Interactive Map</title>
+  <meta name="description" content="A map of themes of free books from wolnelektury.pl.">
+  <meta name="keywords" content="visualization,graph,network,d3.js,book,literature,poem,reading,motif,genre,drama,novel,prose,poetry">
+  <meta name="author" content="Piotr Migdał">
+  <meta property='og:image' content="http://stared.github.io/wizualizacja-wolnych-lektur/wolnelektury_themes_screenshot.png">
+  <meta charset="utf-8">
+</head>
+<style>
+
+.node_circle {
+  stroke: #777;
+  stroke-width: 1.0px;
+}
+
+.node_label {
+  pointer-events: none;
+}
+
+.link {
+  stroke: #777;
+  stroke-opacity: .2;
+}
+
+.node_count {
+  stroke: #777;
+  stroke-width: 1.0px;
+  fill: #999;
+}
+
+text.legend {
+  font-family: Verdana;
+  font-size: 13px;
+  fill: #000;
+}
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 1000,
+    height = 800;
+
+var force = d3.layout.force()
+    .charge( function(d) { return -200; })
+    .linkDistance(200)
+    .gravity(0.15)
+    .linkStrength( function(d){return 1-d.strength;})
+    .size([width, height]);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var graph = {"nodes":[{"name":"Captains Courageous - Rudyard Kipling","display":"Captains Courageous ","id":0},{"name":"Emma - Jane Austen","display":"Emma ","id":1},{"name":"Iron Heel, The - Jack London","display":"Iron Heel, The ","id":2},{"name":"Pride and Prejudice - Jane Austen","display":"Pride and Prejudice ","id":3},{"name":"Essays, The - Francis Bacon","display":"Essays, The ","id":4},{"name":"Hunting of the Snark, The - Lewis Carroll","display":"Hunting of the Snark, The ","id":5},{"name":"Dracula - Bram Stoker","display":"Dracula ","id":6},{"name":"Three Men in a Boat (to Say Nothing of The Dog) - Jerome K. Jerome","display":"Three Men in a Boat (to Say Nothing of The Dog) ","id":7},{"name":"Bush Boys, The - Mayne Reid","display":"Bush Boys, The ","id":8},{"name":"Macbeth - William Shakespeare","display":"Macbeth ","id":9},{"name":"Coral Island, The - Robert Michael Ballantyne","display":"Coral Island, The ","id":10},{"name":"Study In Scarlet, A - Arthur Conan Doyle","display":"Study In Scarlet, A ","id":11},{"name":"Valley of Fear, The - Arthur Conan Doyle","display":"Valley of Fear, The ","id":12},{"name":"Pirate of the Mediterranean, The - W.H.G. Kingston","display":"Pirate of the Mediterranean, The ","id":13},{"name":"Lost World, The - Arthur Conan Doyle","display":"Lost World, The ","id":14},{"name":"Call of the Wild, The - Jack London","display":"Call of the Wild, The ","id":15},{"name":"King's Own, The - Frederick Marryat","display":"King's Own, The ","id":16},{"name":"Through the Looking-Glass - Lewis Carroll","display":"Through the Looking-Glass ","id":17},{"name":"Sherlock Holmes - Arthur Conan Doyle","display":"Sherlock Holmes ","id":18},{"name":"Alice's Adventures in Wonderland - Lewis Carroll","display":"Alice's Adventures in Wonderland ","id":19},{"name":"Adventures of Huckleberry Finn, The - Mark Twain","display":"Adventures of Huckleberry Finn, The ","id":20},{"name":"Adventures of Sherlock Holmes, The - Arthur Conan Doyle","display":"Adventures of Sherlock Holmes, The ","id":21},{"name":"His Last Bow - Arthur Conan Doyle","display":"His Last Bow ","id":22},{"name":"Connecticut Yankee in King Arthur's Court, A - Mark Twain","display":"Connecticut Yankee in King Arthur's Court, A ","id":23},{"name":"Return of Sherlock Holmes, The - Arthur Conan Doyle","display":"Return of Sherlock Holmes, The ","id":24},{"name":"In Freedom's Cause - G. A. Henty","display":"In Freedom's Cause ","id":25},{"name":"Scalp Hunters, The - Captain Mayne Reid","display":"Scalp Hunters, The ","id":26},{"name":"Sign of the Four, The - Sir Arthur Conan Doyle","display":"Sign of the Four, The ","id":27},{"name":"Phantom Ship, The - Frederick Marryat","display":"Phantom Ship, The ","id":28},{"name":"Oliver Twist - Charles Dickens","display":"Oliver Twist ","id":29},{"name":"Master of Ballantrae - Robert Louis Stevenson","display":"Master of Ballantrae ","id":30},{"name":"Strange Case of Dr. Jekyll and Mr. Hyde, The - Robert Louis Stevenson","display":"Strange Case of Dr. Jekyll and Mr. Hyde, The ","id":31},{"name":"Adventures of Captain Horn, The - Frank R. Stockton","display":"Adventures of Captain Horn, The ","id":32},{"name":"Peter Pan - James Matthew Barrie","display":"Peter Pan ","id":33},{"name":"Walden - Henry David Thoreau","display":"Walden ","id":34},{"name":"House of the Seven Gables, The - Nathaniel Hawthorne","display":"House of the Seven Gables, The ","id":35},{"name":"Happy Prince and Other Tales, The - Oscar Wilde","display":"Happy Prince and Other Tales, The ","id":36},{"name":"Adventures of Tom Sawyer, The - Mark Twain","display":"Adventures of Tom Sawyer, The ","id":37},{"name":"Pirate of the Caribbees, A - Harry Collingwood","display":"Pirate of the Caribbees, A ","id":38},{"name":"Romeo and Juliet - William Shakespeare","display":"Romeo and Juliet ","id":39},{"name":"Memoirs of Sherlock Holmes, The - Arthur Conan Doyle","display":"Memoirs of Sherlock Holmes, The ","id":40},{"name":"Paradise lost - John Milton","display":"Paradise lost ","id":41},{"name":"Sea-Wolf, The - Jack London","display":"Sea-Wolf, The ","id":42},{"name":"Headless Horseman, The - Captain Mayne Reid","display":"Headless Horseman, The ","id":43},{"name":"Before Adam - Jack London","display":"Before Adam ","id":44},{"name":"Case-Book of Sherlock Holmes, The - Arthur Conan Doyle","display":"Case-Book of Sherlock Holmes, The ","id":45},{"name":"Gulliver's Travelsinto Several Remote Nations of the World - Jonathan Swift","display":"Gulliver's Travelsinto Several Remote Nations of the World ","id":46},{"name":"Deerslayer, The - James Fenimore Cooper","display":"Deerslayer, The ","id":47},{"name":"Martin Eden - Jack London","display":"Martin Eden ","id":48}],"links":[{"source":0,"target":1,"strength":1.0},{"source":0,"target":2,"strength":1.0},{"source":0,"target":3,"strength":1.0},{"source":0,"target":4,"strength":0.79},{"source":0,"target":5,"strength":0.7},{"source":6,"target":1,"strength":1.0},{"source":6,"target":2,"strength":1.0},{"source":6,"target":3,"strength":1.0},{"source":7,"target":1,"strength":1.0},{"source":7,"target":2,"strength":1.0},{"source":7,"target":3,"strength":1.0},{"source":8,"target":1,"strength":1.0},{"source":8,"target":2,"strength":1.0},{"source":8,"target":3,"strength":1.0},{"source":8,"target":4,"strength":0.7},{"source":9,"target":1,"strength":1.0},{"source":9,"target":2,"strength":1.0},{"source":9,"target":3,"strength":1.0},{"source":9,"target":4,"strength":0.78},{"source":10,"target":1,"strength":1.0},{"source":10,"target":2,"strength":1.0},{"source":10,"target":3,"strength":1.0},{"source":11,"target":1,"strength":1.0},{"source":11,"target":2,"strength":1.0},{"source":11,"target":3,"strength":1.0},{"source":12,"target":1,"strength":1.0},{"source":12,"target":2,"strength":1.0},{"source":12,"target":3,"strength":1.0},{"source":13,"target":1,"strength":1.0},{"source":13,"target":2,"strength":1.0},{"source":13,"target":3,"strength":1.0},{"source":14,"target":1,"strength":1.0},{"source":14,"target":2,"strength":1.0},{"source":14,"target":3,"strength":1.0},{"source":15,"target":1,"strength":1.0},{"source":15,"target":2,"strength":1.0},{"source":15,"target":3,"strength":1.0},{"source":15,"target":4,"strength":0.71},{"source":16,"target":1,"strength":0.99},{"source":16,"target":2,"strength":0.99},{"source":16,"target":3,"strength":0.99},{"source":17,"target":1,"strength":1.0},{"source":17,"target":2,"strength":1.0},{"source":17,"target":3,"strength":1.0},{"source":18,"target":1,"strength":1.0},{"source":18,"target":2,"strength":1.0},{"source":18,"target":3,"strength":1.0},{"source":1,"target":19,"strength":1.0},{"source":1,"target":20,"strength":1.0},{"source":1,"target":21,"strength":1.0},{"source":1,"target":22,"strength":1.0},{"source":1,"target":23,"strength":1.0},{"source":1,"target":24,"strength":1.0},{"source":1,"target":25,"strength":0.91},{"source":1,"target":26,"strength":1.0},{"source":1,"target":27,"strength":1.0},{"source":1,"target":28,"strength":1.0},{"source":1,"target":29,"strength":0.89},{"source":1,"target":30,"strength":1.0},{"source":1,"target":31,"strength":1.0},{"source":1,"target":32,"strength":1.0},{"source":1,"target":4,"strength":1.0},{"source":1,"target":33,"strength":0.71},{"source":1,"target":34,"strength":1.0},{"source":1,"target":35,"strength":0.89},{"source":1,"target":36,"strength":1.0},{"source":1,"target":37,"strength":0.98},{"source":1,"target":38,"strength":1.0},{"source":1,"target":39,"strength":1.0},{"source":1,"target":40,"strength":1.0},{"source":1,"target":41,"strength":1.0},{"source":1,"target":42,"strength":1.0},{"source":1,"target":43,"strength":1.0},{"source":1,"target":44,"strength":0.85},{"source":1,"target":5,"strength":1.0},{"source":1,"target":45,"strength":1.0},{"source":1,"target":46,"strength":0.83},{"source":19,"target":2,"strength":1.0},{"source":19,"target":3,"strength":1.0},{"source":19,"target":4,"strength":0.72},{"source":2,"target":20,"strength":1.0},{"source":2,"target":21,"strength":1.0},{"source":2,"target":22,"strength":1.0},{"source":2,"target":23,"strength":1.0},{"source":2,"target":24,"strength":1.0},{"source":2,"target":25,"strength":0.91},{"source":2,"target":26,"strength":1.0},{"source":2,"target":27,"strength":1.0},{"source":2,"target":28,"strength":1.0},{"source":2,"target":29,"strength":0.89},{"source":2,"target":30,"strength":1.0},{"source":2,"target":31,"strength":1.0},{"source":2,"target":32,"strength":1.0},{"source":2,"target":4,"strength":1.0},{"source":2,"target":33,"strength":0.71},{"source":2,"target":34,"strength":1.0},{"source":2,"target":35,"strength":0.89},{"source":2,"target":36,"strength":1.0},{"source":2,"target":37,"strength":0.98},{"source":2,"target":38,"strength":1.0},{"source":2,"target":39,"strength":1.0},{"source":2,"target":40,"strength":1.0},{"source":2,"target":41,"strength":1.0},{"source":2,"target":42,"strength":1.0},{"source":2,"target":43,"strength":1.0},{"source":2,"target":44,"strength":0.85},{"source":2,"target":5,"strength":1.0},{"source":2,"target":45,"strength":1.0},{"source":2,"target":46,"strength":0.83},{"source":20,"target":3,"strength":1.0},{"source":20,"target":4,"strength":0.74},{"source":21,"target":3,"strength":1.0},{"source":22,"target":3,"strength":1.0},{"source":3,"target":23,"strength":1.0},{"source":3,"target":24,"strength":1.0},{"source":3,"target":25,"strength":0.91},{"source":3,"target":26,"strength":1.0},{"source":3,"target":27,"strength":1.0},{"source":3,"target":28,"strength":1.0},{"source":3,"target":29,"strength":0.89},{"source":3,"target":30,"strength":1.0},{"source":3,"target":31,"strength":1.0},{"source":3,"target":32,"strength":1.0},{"source":3,"target":4,"strength":1.0},{"source":3,"target":33,"strength":0.71},{"source":3,"target":34,"strength":1.0},{"source":3,"target":35,"strength":0.89},{"source":3,"target":36,"strength":1.0},{"source":3,"target":37,"strength":0.98},{"source":3,"target":38,"strength":1.0},{"source":3,"target":39,"strength":1.0},{"source":3,"target":40,"strength":1.0},{"source":3,"target":41,"strength":1.0},{"source":3,"target":42,"strength":1.0},{"source":3,"target":43,"strength":1.0},{"source":3,"target":44,"strength":0.85},{"source":3,"target":5,"strength":1.0},{"source":3,"target":45,"strength":1.0},{"source":3,"target":46,"strength":0.83},{"source":26,"target":4,"strength":0.75},{"source":29,"target":4,"strength":0.73},{"source":32,"target":4,"strength":0.71},{"source":47,"target":4,"strength":0.79},{"source":47,"target":43,"strength":0.71},{"source":47,"target":5,"strength":0.71},{"source":4,"target":35,"strength":0.74},{"source":4,"target":48,"strength":0.78},{"source":4,"target":37,"strength":0.71},{"source":4,"target":41,"strength":0.78},{"source":4,"target":42,"strength":0.72},{"source":4,"target":43,"strength":0.8},{"source":4,"target":5,"strength":0.8},{"source":43,"target":5,"strength":0.72}]} ;
+
+  var node_color = d3.rgb(115,200,35).toString();
+
+  var main = svg.append("g")
+   .attr("class", "graph");
+
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+  var link = main.selectAll(".link")
+      .data(graph.links)
+    .enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", function(d) { return 2 * d.strength; });
+
+  var node = main.selectAll(".node_circle")
+      .data(graph.nodes)
+    .enter().append("circle")
+      .attr("class", "node_circle")
+      .attr("r", function(d) { return 12 })
+      .style("fill", function(d){ return node_color; } )
+      .on("mouseover", function(d) { mouseover_node(d); })
+      .on("mouseout", function(d) { mouseout_node(d); })
+      .call(force.drag);
+
+  var label = main.selectAll(".node_label")
+      .data(graph.nodes)
+    .enter().append("text")
+      .attr("class", "node_label")
+      .attr("dx", function(d) { return 2 + 12; })
+      .attr("dy", ".4em")
+      .attr("font-family", "Verdana")
+      .attr("font-size", 10)
+      .style("fill", "#000000")
+      .text(function(d) { return d.display; });
+
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+
+    label.attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; });
+  });
+
+  var mouseover_node = function(z){ 
+
+    var neighbors = {};
+    neighbors[z.index] = true;
+
+    link.filter(function(d){
+        if (d.source == z && d.strength > 0.7) {
+          neighbors[d.target.index] = true
+          return true
+        } else if (d.target == z && d.strength > 0.7) {
+          neighbors[d.source.index] = true
+          return true
+        } else {
+          return false
+        }
+      })
+        .style("stroke-opacity", 1);
+
+    node.filter(function(d){ return neighbors[d.index] })
+        .style("stroke-width", 3);
+
+    label.filter(function(d){ return !neighbors[d.index] })
+        .style("fill-opacity", 0.2);
+    
+    node.filter(function(d){ return !neighbors[d.index] })
+        .style("fill-opacity", 0.1);
+
+    link.filter(function(d){ return !neighbors[d.index] })
+        .style("fill-opacity", 0.1);
+
+    label.filter(function(d){ return neighbors[d.index] })
+        .attr("font-size", 16)
+        label.filter(function(d){ return neighbors[d.index] })
+        .text(function(d) { return d.name; });
+
+  };
+
+  var mouseout_node = function(z){ 
+    link
+      .style("stroke-opacity", 0.2)
+      .style("fill-opacity", 1);
+
+    node
+      .style("stroke-width", 1)
+      .style("fill-opacity", 1);
+
+    label
+      .attr("font-size", 10)
+      .style("fill-opacity", 1)
+      .text(function(d) { return d.display; });
+
+  };
+</script>

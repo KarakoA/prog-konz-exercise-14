@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<head>
+  <title>Polish Books Themes - an Interactive Map</title>
+  <meta name="description" content="A map of themes of free books from wolnelektury.pl.">
+  <meta name="keywords" content="visualization,graph,network,d3.js,book,literature,poem,reading,motif,genre,drama,novel,prose,poetry">
+  <meta name="author" content="Piotr Migdał">
+  <meta property='og:image' content="http://stared.github.io/wizualizacja-wolnych-lektur/wolnelektury_themes_screenshot.png">
+  <meta charset="utf-8">
+</head>
+<style>
+
+.node_circle {
+  stroke: #777;
+  stroke-width: 1.0px;
+}
+
+.node_label {
+  pointer-events: none;
+}
+
+.link {
+  stroke: #777;
+  stroke-opacity: .2;
+}
+
+.node_count {
+  stroke: #777;
+  stroke-width: 1.0px;
+  fill: #999;
+}
+
+text.legend {
+  font-family: Verdana;
+  font-size: 13px;
+  fill: #000;
+}
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 1000,
+    height = 800;
+
+var force = d3.layout.force()
+    .charge( function(d) { return -200; })
+    .linkDistance(200)
+    .gravity(0.15)
+    .linkStrength( function(d){return 1-d.strength;})
+    .size([width, height]);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var graph = @HERE ;
+
+  var node_color = d3.rgb(115,200,35).toString();
+
+  var main = svg.append("g")
+   .attr("class", "graph");
+
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+  var link = main.selectAll(".link")
+      .data(graph.links)
+    .enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", function(d) { return 2 * d.strength; });
+
+  var node = main.selectAll(".node_circle")
+      .data(graph.nodes)
+    .enter().append("circle")
+      .attr("class", "node_circle")
+      .attr("r", function(d) { return 12 })
+      .style("fill", function(d){ return node_color; } )
+      .on("mouseover", function(d) { mouseover_node(d); })
+      .on("mouseout", function(d) { mouseout_node(d); })
+      .call(force.drag);
+
+  var label = main.selectAll(".node_label")
+      .data(graph.nodes)
+    .enter().append("text")
+      .attr("class", "node_label")
+      .attr("dx", function(d) { return 2 + 12; })
+      .attr("dy", ".4em")
+      .attr("font-family", "Verdana")
+      .attr("font-size", 10)
+      .style("fill", "#000000")
+      .text(function(d) { return d.display; });
+
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+
+    label.attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; });
+  });
+
+  var mouseover_node = function(z){ 
+
+    var neighbors = {};
+    neighbors[z.index] = true;
+
+    link.filter(function(d){
+        if (d.source == z && d.strength > 0.7) {
+          neighbors[d.target.index] = true
+          return true
+        } else if (d.target == z && d.strength > 0.7) {
+          neighbors[d.source.index] = true
+          return true
+        } else {
+          return false
+        }
+      })
+        .style("stroke-opacity", 1);
+
+    node.filter(function(d){ return neighbors[d.index] })
+        .style("stroke-width", 3);
+
+    label.filter(function(d){ return !neighbors[d.index] })
+        .style("fill-opacity", 0.2);
+    
+    node.filter(function(d){ return !neighbors[d.index] })
+        .style("fill-opacity", 0.1);
+
+    link.filter(function(d){ return !neighbors[d.index] })
+        .style("fill-opacity", 0.1);
+
+    label.filter(function(d){ return neighbors[d.index] })
+        .attr("font-size", 16)
+        label.filter(function(d){ return neighbors[d.index] })
+        .text(function(d) { return d.name; });
+
+  };
+
+  var mouseout_node = function(z){ 
+    link
+      .style("stroke-opacity", 0.2)
+      .style("fill-opacity", 1);
+
+    node
+      .style("stroke-width", 1)
+      .style("fill-opacity", 1);
+
+    label
+      .attr("font-size", 10)
+      .style("fill-opacity", 1)
+      .text(function(d) { return d.display; });
+
+  };
+</script>
